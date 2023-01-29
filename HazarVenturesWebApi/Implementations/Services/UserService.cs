@@ -83,10 +83,8 @@ namespace HazarVenturesWebApi.Implementations.Services
                         Email = user.Email.ToLower(),
                         FirstName = user.Student.FirstName,
                         LastName = user.Student.LastName,
-                        DepartmentName = user.Student.Department.Name,
                         RoleId = user.Role.Id,
-                        RoleName = user.Role.Name,
-                        StudentId = user.Student.Id,
+                        RoleName = user.Role.Name
                     },
                     Status = true,
                     Message = "Student User Retreived Successfully"
@@ -100,10 +98,8 @@ namespace HazarVenturesWebApi.Implementations.Services
                         Email = user.Email.ToLower(),
                         FirstName = user.Lecturer.FirstName,
                         LastName = user.Lecturer.LastName,
-                        DepartmentName = user.Lecturer.Department.Name,
                         RoleId = user.RoleId,
-                        RoleName = user.Role.Name,
-                        LecturerId = user.Lecturer.Id
+                        RoleName = user.Role.Name
                     },
                     Status = true,
                     Message = "Lectuer User retreived successfully"
@@ -131,11 +127,9 @@ namespace HazarVenturesWebApi.Implementations.Services
                         Data = new UserDto
                         {
                             Id = user.Id,
-                            StudentId = user.Student.Id,
                             Email = user.Email,
                             FirstName = user.Student.FirstName,
                             LastName = user.Student.LastName,
-                            DepartmentName = user.Student.Department.Name,
                             RoleName = user.Role.Name,
                             RoleId = user.RoleId
                         },
@@ -154,9 +148,7 @@ namespace HazarVenturesWebApi.Implementations.Services
                             Email = user.Email,
                             FirstName = user.Lecturer.FirstName,
                             LastName = user.Lecturer.LastName,
-                            DepartmentName = user.Lecturer.Department.Name,
                             RoleName = user.Role.Name,
-                            LecturerId = user.Lecturer.Id,
                             RoleId = user.RoleId
                         },
                         Status = true,

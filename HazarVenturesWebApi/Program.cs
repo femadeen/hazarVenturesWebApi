@@ -1,9 +1,14 @@
+using HazarVenturesWebApi.Authentication;
 using HazarVenturesWebApi.HazarVenturesContext;
 using HazarVenturesWebApi.Implementations.Repositories;
 using HazarVenturesWebApi.Implementations.Services;
 using HazarVenturesWebApi.Interfaces.Repositories;
 using HazarVenturesWebApi.Interfaces.Services;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -33,9 +38,27 @@ builder.Services.AddScoped<IRoleRepository, RoleRepository>();
 builder.Services.AddScoped<ICourseService, CourseService>();
 builder.Services.AddScoped<ICourseRepository, CourseRepository>();
 builder.Services.AddScoped<IGeneralService, GeneralService>();
+var key = "This is an authorization key";
+builder.Services.AddSingleton<IJwtAuthentication>(new JwtAuthentication(key));
 
+builder.Services.AddAuthentication(x =>
+{
+    x.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+    x.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+})
+    .AddJwtBearer(x =>
+    {
+        x.RequireHttpsMetadata = false;
+        x.SaveToken = true;
+        x.TokenValidationParameters = new TokenValidationParameters
+        {
+            ValidateIssuerSigningKey = true,
+            IssuerSigningKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(key)),
+            ValidateIssuer = false,
+            ValidateAudience = false
+        };
 
-
+    });
 
 builder.Services.AddDbContext<HazarVenturesDbContext>(options => {
     options.UseMySql(builder.Configuration.GetConnectionString("HazarVenturesWebApi"), new MySqlServerVersion(new Version(8, 0, 22)));

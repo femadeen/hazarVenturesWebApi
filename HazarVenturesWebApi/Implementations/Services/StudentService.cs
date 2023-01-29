@@ -93,7 +93,7 @@ namespace HazarVenturesWebApi.Implementations.Services
             var students = await _studentRepository.GetAllStudents();
             var studentReturned = students.Select(s => new StudentDto
             {
-             
+                Id = s.Id,
                 FirstName = s.FirstName,
                 LastName = s.LastName,
                 Email = s.Email,
@@ -146,6 +146,7 @@ namespace HazarVenturesWebApi.Implementations.Services
             }
             student.LastName = model.LastName;
             student.Email = model.Email;
+            student.DepartmentId = model.DepartmentId;
             await _studentRepository.UpdateStudent(student);
             return new BaseResponse
             {

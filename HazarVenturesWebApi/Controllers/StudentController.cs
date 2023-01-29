@@ -64,9 +64,9 @@ namespace HazarVenturesWebApi.Controllers
 
         
         [HttpDelete("DeleteStudent")]
-        public IActionResult DeleteStudent(int id)
+        public async Task<IActionResult> DeleteStudent(int id)
         {
-            var student = _studentService.DeleteStudent(id);
+            var student = await _studentService.DeleteStudent(id);
             return Ok(student);
         }
 

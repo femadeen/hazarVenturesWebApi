@@ -23,7 +23,8 @@ namespace HazarVenturesWebApi.Implementations.Repositories
         public async Task<bool> DeleteStudent(Student student)
         {
              _context.Students.Remove(student);
-            return true;
+            _context.SaveChanges();
+             return true;
         }
 
         public async Task<bool> Exists(string email)

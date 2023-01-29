@@ -5,6 +5,9 @@ using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
+using HazarVenturesWebApi.Authentication;
+using HazarVenturesWebApi.Models.ResponseModels;
+using HazarVenturesWebApi.Dtos;
 
 namespace HazarVenturesWebApi.Controllers
 {
@@ -13,9 +16,11 @@ namespace HazarVenturesWebApi.Controllers
     public class UserController : ControllerBase
     {
         private readonly IUserService _userService;
-        public UserController(IUserService userService)
+        private readonly  IJwtAuthentication _jwt;
+        public UserController(IUserService userService, IJwtAuthentication jwt)
         {
             _userService = userService;
+            _jwt = jwt;
         }
         
         [HttpGet("UserInfo")]
@@ -35,17 +40,19 @@ namespace HazarVenturesWebApi.Controllers
                 
                 return BadRequest(loginStatus);
             }
-            var claims = new List<Claim>
+            var token = _jwt.GenerateToken(loginStatus.Data);
+            var response = new UserResponseModel
             {
-                new Claim(ClaimTypes.NameIdentifier, loginStatus.Data.Id.ToString()),
-                new Claim(ClaimTypes.Email, loginStatus.Data.Email),
-                new Claim(ClaimTypes.Role, loginStatus.Data.RoleName)
+                Data = loginStatus.Data,
+                /*{   
+                    Id = loginStatus.Data.Id,
+                    FirstName = loginStatus.Data.FirstName,
+                    LastName = loginStatus.Data.LastName,
+                    Email = loginStatus.Data.Email,
+                },*/
+                Token = token
             };
-            var claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
-            var authenticationProperties = new AuthenticationProperties();
-            var claimsPrincipal = new ClaimsPrincipal(claimsIdentity);
-            HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, claimsPrincipal, authenticationProperties);
-            return Ok(loginStatus);
+            return Ok(response);
         }
     }
 }
